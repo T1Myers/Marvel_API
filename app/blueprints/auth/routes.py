@@ -2,6 +2,7 @@ from app.blueprints.auth.models import User
 from .import bp as app
 from flask import request, flash, redirect, url_for, render_template
 from flask_login import login_user, logout_user
+from app import db
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -23,6 +24,24 @@ def login():
         flash('You have logged in successfully!', 'info')
         return redirect(url_for('home'))
     return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        user = User.query.filter_by(email=request.form.get('email')).first()
+        if user is not None:
+            flash('That user already exists. Please try another email address', 'warning')
+            return redirect(url_for('auth.register'))
+        if request.form.get('password') != request.form.get('confirm_password'):
+            flash('Your password do not match.', 'danger')
+            return redirect(url_for('auth.register'))
+        u = User()
+        u.from_dict(request.form)
+        u.save()
+        # print('It works!')
+        flash('User has registered successfully', 'success')
+        return redirect(url_for('auth.login'))
+    return render_template('register.html')
 
 @app.route('/logout')
 def logout():
