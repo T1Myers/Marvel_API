@@ -1,8 +1,8 @@
 from flask.helpers import url_for
 import flask_login
-from app import app, db
-from flask import render_template, request, redirect, url_for, flash
-from app.models import Post, User
+from app import db
+from flask import current_app as app, render_template, request, redirect, url_for, flash
+from app.models import Post
 from flask_login import login_user, logout_user, current_user
 
 @app.route('/', methods=['GET', 'POST'])
@@ -31,29 +31,3 @@ def about():
 def contact():
     return render_template('contact.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-
-        # look for the user in our database
-        user = User.query.filter_by(email=email).first()
-        # if the email and/or password don't match,
-        if user is None or not user.check_password(password):
-            # show an error messages
-            flash('You typed in either an incorrect email or password', 'danger')
-            # redirect to the login page
-            return redirect(url_for('login'))
-        # otherwise
-        # log the user in
-        login_user(user)
-        flash('You have logged in successfully!', 'info')
-        return redirect(url_for('home'))
-    return render_template('login.html')
-
-@app.route('/logout')
-def logout():
-    logout_user()
-    flash('You have logged out successfully', 'primary')
-    return redirect(url_for('home'))
