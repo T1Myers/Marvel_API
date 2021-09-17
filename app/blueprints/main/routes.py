@@ -1,13 +1,11 @@
 from flask.helpers import url_for
-import flask_login
 from app import db
-from flask import current_app as app, render_template, request, redirect, url_for, flash
-from app.models import Post
-from flask_login import login_user, logout_user, current_user
+from flask import render_template, request, redirect, url_for, flash
+from app.blueprints.main.models import Post
+from .import bp as app
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    print(current_user if current_user else None)
     if request.method == 'POST':
         p = Post(
                 body=request.form.get('body'),
@@ -16,7 +14,7 @@ def home():
         db.session.add(p)
         db.session.commit()
         flash('Post created successfully', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
     context = {
         'posts': Post.query.order_by(Post.date_created.desc()).all()
     }

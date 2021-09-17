@@ -10,7 +10,29 @@ class Post(db.Model):
     date_created = db.Column(db.DateTime(), default=dt.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def to_dict(self):
+        from app.blueprints.auth.models import User
+
+        data = {
+            'id': self.id,
+            'body': self.body,
+            'date_created': self.date_created,
+            'user': User.query.get(self.user_id).to_dict()
+        }
+        return data
+
+    def from_dict(self, data):
+        for field in ['body', 'user_id']:
+            if field in data:
+                setattr(self, field, data[field])
 
 # HASHING AND SALTING
 

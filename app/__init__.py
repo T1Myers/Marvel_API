@@ -18,9 +18,13 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
 
     with app.app_context():
-        from .import routes, models
-
         from app.blueprints.auth import bp as auth
         app.register_blueprint(auth)
+
+        from app.blueprints.api import bp as api
+        app.register_blueprint(api)
+
+        from app.blueprints.main import bp as main
+        app.register_blueprint(main)
 
     return app

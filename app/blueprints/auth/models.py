@@ -23,6 +23,18 @@ class User(UserMixin, db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def to_dict(self):
+        from app.blueprints.main.models import Post
+
+        data = {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            # 'posts': [p.to_dict() for p in Post.query.filter_by(user_id=self.id).all()]
+        }
+        return data
+
     def from_dict(self, data):
         for field in ['first_name', 'last_name', 'email', 'password']:
             if field in data:

@@ -22,7 +22,7 @@ def login():
         # log the user in
         login_user(user)
         flash('You have logged in successfully!', 'info')
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -47,4 +47,4 @@ def register():
 def logout():
     logout_user()
     flash('You have logged out successfully', 'primary')
-    return redirect(url_for('home'))
+    return redirect(url_for('main.home'))
