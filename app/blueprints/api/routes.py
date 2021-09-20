@@ -2,7 +2,7 @@ from app.blueprints.auth.models import User
 from .import bp as api
 from flask import jsonify, request
 from app import db
-from app.blueprints.main.models import Post
+from app.blueprints.main.models import Character
 
 # All posts
 @api.route('/posts', methods=['GET'])

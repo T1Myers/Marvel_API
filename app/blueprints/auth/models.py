@@ -2,6 +2,7 @@ from enum import unique
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import db, login_manager
+from datetime import datetime as dt
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -9,7 +10,9 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(50))
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(250))
-    posts = db.relationship('Post', backref='user', lazy='dynamic')
+    # token = db.Column(db.String(250))
+    date_created = db.Column(db.DateTime(), default=dt.utcnow)
+    character = db.Column(db.String(50))
 
     def create_password_hash(self, new_password):
         self.password = generate_password_hash(new_password)
@@ -24,7 +27,7 @@ class User(UserMixin, db.Model):
         db.session.commit()
 
     def to_dict(self):
-        from app.blueprints.main.models import Post
+        from app.blueprints.main.models import Character
 
         data = {
             'id': self.id,

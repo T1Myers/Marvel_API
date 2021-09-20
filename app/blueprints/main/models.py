@@ -4,11 +4,14 @@ from app import login_manager
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-class Post(db.Model):
+class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.Text())
+    name = db.Column(db.String(50))
+    description = db.Column(db.String(250))
+    comics_appeared_in = db.Column(db.Integer)
+    super_power = db.Column(db.String(250))
     date_created = db.Column(db.DateTime(), default=dt.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    owner = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def save(self):
         db.session.add(self)
@@ -33,24 +36,3 @@ class Post(db.Model):
         for field in ['body', 'user_id']:
             if field in data:
                 setattr(self, field, data[field])
-
-# HASHING AND SALTING
-
-# lucas-hash
-# derek-hash
-
-# HASHING
-# password = abc123
-# translation => er7p98789arhuo8bozufjn2
-
-# SALTING
-# real password for password 1 = abc123
-# original = er7p98789arhuo8bozufjn2
-# salt = 2q480we89b801dfuuoijsriodfuo
-
-# real password for password 2 = abc123
-# original = er7p98789arhuo8bozufjn2
-# salt = 84yar8h90fd9n80uO2YAH09
-
-# REAL_PASSWORD = ABC123
-# salt = 84yar8h90fd9n80uO2YAH09
